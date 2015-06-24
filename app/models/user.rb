@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  attr_accessor :remember_token
+
   has_many :lessons, dependent: :destroy
   has_many :active_relationships, class_name: "Relationship",
                                   foreign_key: "follower_id",
@@ -18,6 +20,8 @@ class User < ActiveRecord::Base
                     if: "new_record?"
   validates :password, length: {minimum: Settings.length.minimum}, if: "password_set?"
 
+  has_secure_password
+
   def password_set?
     new_record? || password.present?
   end
@@ -26,5 +30,23 @@ class User < ActiveRecord::Base
     cost = BCrypt::Engine.cost
     cost = ActiveModel::SecurePassword.min_cost if BCrypt::Engine::MIN_COST
     BCrypt::Password.create(value, cost: cost)
+  end
+
+  def User.new_token
+    SecureRandom.urlsafe_base64
+  end
+
+  def remember
+    self.remember_token = User.new_token
+    update_attributes remember_digest: User.digest(remember_token)
+  end
+
+  def authenticated? remember_token
+    return false if remember_digest.nil?
+    BCrypt::Password.new(remember_digest).is_password? remember_token
+  end
+
+  def forget
+    update_attributes remember_digest: nil
   end
 end

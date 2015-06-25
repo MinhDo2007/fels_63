@@ -9,8 +9,7 @@ class User < ActiveRecord::Base
                                   foreign_key: "followed_id",
                                   dependent: :destroy
   has_many :following, through: :active_relationships, source: :followed
-  has_many :followers, through: :passive_relationships, source: :follower,
-                       dependent: :destroy
+  has_many :followers, through: :passive_relationships, source: :follower
   has_secure_password
 
   validates :name, presence: true, length: {maximum: Settings.length.short_maximum}
@@ -22,6 +21,18 @@ class User < ActiveRecord::Base
 
   has_secure_password
 
+  def follow other_user
+    active_relationships.create followed_id: other_user.id
+  end
+
+  def unfollow other_user
+    active_relationships.find_by(followed_id: other_user.id).destroy
+  end
+
+  def following? other_user
+    following.include? other_user
+  end
+
   def password_set?
     new_record? || password.present?
   end
@@ -29,7 +40,7 @@ class User < ActiveRecord::Base
   def User.digest value
     cost = BCrypt::Engine.cost
     cost = ActiveModel::SecurePassword.min_cost if BCrypt::Engine::MIN_COST
-    BCrypt::Password.create(value, cost: cost)
+    BCrypt::Password.create value, cost: cost
   end
 
   def User.new_token

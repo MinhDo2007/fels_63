@@ -1,0 +1,16 @@
+<%= render "shared/search" %>
+<div class="container">
+  <table class="table table-bordered">
+    <tr>
+      <th>ID</th>
+      <th><%= t :word_content %></th>
+    </tr>
+    <% @words.each do |word| %>
+      <tr>
+        <td><%= word.id %></td>
+        <td><%= word.content %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+

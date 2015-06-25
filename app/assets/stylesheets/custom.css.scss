@@ -225,3 +225,12 @@ input {
     border-bottom: 1px solid $gray-lighter;
   }
 }
+
+.tm-radio input{
+  display: inline-block;
+  width:  auto;
+}
+
+.tm-submit input{
+  width:  auto;
+}

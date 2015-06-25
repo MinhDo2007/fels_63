@@ -1,0 +1,23 @@
+<%= form_for words_path, method: :get do |f| %>
+  <div class="row">
+    <p><%= t :categories %></p>
+    <div id="search-field">
+      <div class="col-md-5">
+        <%= collection_select(:filter, :category_id, @categories, :id,
+                              :name, {prompt: false},
+        {class: "form-control"}) %>
+      </div>
+    </div>
+    <div class="tm-radio">
+    <% ["all", "learned", "not_learned"].each do |item| %>
+        <%= label_tag item, class: 'radio-inline' do %>
+          <%= radio_button_tag :filter_state, item %> <%= item.titleize %>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="tm-submit">
+      <%= f.submit "Search", class: "glyphicon glyphicon-search" %>
+    </div>
+  </div>
+  <hr>
+<% end %>

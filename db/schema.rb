@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 20150625034100) do
     t.datetime "updated_at",        null: false
     t.string   "activation_digest"
     t.datetime "activated_at"
+    t.string   "remember_digest"
     t.string   "reset_digest"
     t.datetime "reset_sent_at"
   end
